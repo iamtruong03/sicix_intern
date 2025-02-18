@@ -2,21 +2,14 @@ package com.group1.entities;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.*;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "departmentId")
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,28 +18,19 @@ public class Department {
     @Column(nullable = false, unique = true)
     private String nameDepartment;
 
-    // Tránh vòng lặp vô hạn khi serialize
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "parent_id")
+    @JsonIgnore // Ẩn phòng ban cha khi serialize JSON
     private Department parentDepartment;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "parentDepartment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parentDepartment", cascade = CascadeType.PERSIST)
     private List<Department> subDepartments = new ArrayList<>();
 
-    
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<User> users;
+    @OneToMany(mappedBy = "department", cascade = CascadeType.PERSIST)
+    @JsonManagedReference // Đảm bảo trả về danh sách users trong phòng ban
+    private List<User> users = new ArrayList<>();
 
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
-
+    // Getter & Setter
     public Long getDepartmentId() {
         return departmentId;
     }
@@ -79,9 +63,11 @@ public class Department {
         this.subDepartments = subDepartments;
     }
 
-    // 🔹 Lấy ID của phòng ban cha (dùng cho mapper)
-    public Long getParentId() {
-        return parentDepartment != null ? parentDepartment.getDepartmentId() : null;
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }
-

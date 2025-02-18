@@ -33,6 +33,10 @@ public class PermissionService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản: " + userId));
 
+        if (user.getDepartment() == null) {
+            throw new RuntimeException("Người dùng không thuộc phòng ban nào, không có quyền truy cập.");
+        }
+        
         List<Department> accessibleDepartments = new ArrayList<>();
 
         // Lấy phòng ban của User
@@ -43,4 +47,6 @@ public class PermissionService {
 
         return accessibleDepartments;
     }
+    
+   
 }

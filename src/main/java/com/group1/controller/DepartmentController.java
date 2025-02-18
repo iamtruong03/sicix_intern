@@ -44,10 +44,11 @@ public class DepartmentController {
         return departmentService.getAllDepartment();
     }
     
-    // view 
+    // view full department
     @GetMapping("/{departmentId}/users")
     public List<User> getUsersInSubDepartments(@PathVariable Long departmentId) {
         return departmentService.getUsersInSubDepartments(departmentId);
     }
 
+   
 }

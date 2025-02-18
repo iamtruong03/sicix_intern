@@ -1,5 +1,6 @@
 package com.group1.service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -37,56 +38,64 @@ public class UserService {
 
 	// thêm user vào phòng ban
 	public void addUserToDepartment(Long userId, Long departmentId) {
+		// Tìm kiếm người dùng theo ID
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản: " + userId));
 
+		// Kiểm tra xem người dùng đã thuộc phòng ban nào chưa
+		if (user.getDepartment() != null) {
+			throw new RuntimeException("User đã thuộc phòng ban: " + user.getDepartment().getNameDepartment());
+		}
+
+		// Tìm kiếm phòng ban theo ID
 		Department department = departmentRepository.findById(departmentId)
 				.orElseThrow(() -> new RuntimeException("Không tìm thấy phòng ban: " + departmentId));
 
+		// Thêm phòng ban cho người dùng
 		user.setDepartment(department);
 		userRepository.save(user);
 	}
 
+
+	public Boolean login(String nameUser, String password) {
+		if (nameUser == null) {
+			throw new AppException(ErrorCode.INVALID_USER);
+		}
+		if (password == null || password.isEmpty()) {
+			throw new AppException(ErrorCode.INVALID_PASSWORD);
+		}
+
+		User user = userRepository.findByNameUser(nameUser)
+				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+		if (!passwordEncoder.matches(password, user.getPassword())) {
+			throw new AppException(ErrorCode.WRONG_PASSWORD);
+		}
+		return true;
+	}
+
+	public Boolean changePassword(Long id, String newPassword) {
+
+		if (newPassword == null || newPassword.isEmpty()) {
+			throw new AppException(ErrorCode.INVALID_PASSWORD);
+		}
+
+		User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+		String encodedPassword = passwordEncoder.encode(newPassword);
+		user.setPassword(encodedPassword);
+
+		userRepository.save(user);
+		return true;
+
+	}
 //	public void create(User user) {
-//		user.setPassword(passwordEncoder.encode(user.getPassword()));
-//		if (userRepository.existsByNameUser(user.getNameUser())) {
-//			throw new AppException(ErrorCode.USER_EXISTED);
-//		}
-//		userRepository.save(user);
+//	user.setPassword(passwordEncoder.encode(user.getPassword()));
+//	if (userRepository.existsByNameUser(user.getNameUser())) {
+//		throw new AppException(ErrorCode.USER_EXISTED);
 //	}
-//
-//	public Boolean login(String nameUser, String password) {
-//		if (nameUser == null) {
-//			throw new AppException(ErrorCode.INVALID_USER);
-//		}
-//		if (password == null || password.isEmpty()) {
-//			throw new AppException(ErrorCode.INVALID_PASSWORD);
-//		}
-//
-//		User user = userRepository.findByNameUser(nameUser)
-//				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-//
-//		if (!passwordEncoder.matches(password, user.getPassword())) {
-//			throw new AppException(ErrorCode.WRONG_PASSWORD);
-//		}
-//		return true;
-//	}
-//
-//	public Boolean changePassword(Long id, String newPassword) {
-//
-//		if (newPassword == null || newPassword.isEmpty()) {
-//			throw new AppException(ErrorCode.INVALID_PASSWORD);
-//		}
-//
-//		User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-//
-//		String encodedPassword = passwordEncoder.encode(newPassword);
-//		user.setPassword(encodedPassword);
-//
-//		userRepository.save(user);
-//		return true;
-//
-//	}
+//	userRepository.save(user);
+//}
 //
 //	public Boolean update(User user) {
 //		if (userRepository.existsById(user.getId())) {
@@ -145,5 +154,6 @@ public class UserService {
 		// Lưu và trả về thông tin người dùng đã cập nhật
 		return userMapper.toUserResponse(userRepository.save(user));
 	}
+
 
 }
