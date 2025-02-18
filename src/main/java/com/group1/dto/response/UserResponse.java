@@ -1,4 +1,4 @@
-package com.group1.model.response;
+package com.group1.dto.response;
 
 public class UserResponse {
 

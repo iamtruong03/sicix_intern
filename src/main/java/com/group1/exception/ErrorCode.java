@@ -10,7 +10,9 @@ public enum ErrorCode {
 	INVALID_PASSWORD(1004, "Invalid password", HttpStatus.BAD_REQUEST),
 	INVALID_ID(1005, "Invalid id", HttpStatus.BAD_REQUEST),
 	INVALID_USER(1006, "Invalid user", HttpStatus.BAD_REQUEST),
-	WRONG_PASSWORD(1007, "Wrong password", HttpStatus.BAD_REQUEST);
+	WRONG_PASSWORD(1007, "Wrong password", HttpStatus.BAD_REQUEST),
+	UNAUTHORIZED_ACCESS(1008,"Unauthorized",HttpStatus.BAD_REQUEST),
+	DEPARTMENT_EXISTED(1009, "Department existed",HttpStatus.BAD_REQUEST );
 	
 	private final int code;
 	private final String message;

@@ -1,12 +1,7 @@
-package com.group1.model.request;
+package com.group1.dto.request;
 
-public class UserRequest {
-    public String getNameUser() {
-		return nameUser;
-	}
-	public void setNameUser(String nameUser) {
-		this.nameUser = nameUser;
-	}
+public class UserUpdateRequest {
+
 	public String getBirthday() {
 		return birthday;
 	}
@@ -16,6 +11,7 @@ public class UserRequest {
 	public String getAddress() {
 		return address;
 	}
+	
 	public void setAddress(String address) {
 		this.address = address;
 	}
@@ -31,9 +27,8 @@ public class UserRequest {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	private String nameUser;
-    private String birthday;
-    private String address;
-    private String phoneNumber;
-    private String password;
+	private String birthday;
+	private String address;
+	private String phoneNumber;
+	private String password;
 }

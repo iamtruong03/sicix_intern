@@ -1,10 +1,12 @@
 package com.group1.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.group1.entities.Department;
 import com.group1.entities.User;
 
 
@@ -12,4 +14,5 @@ import com.group1.entities.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 	boolean existsByNameUser(String nameuser);
 	Optional<User> findByNameUser(String nameuser);
+	List<User> findByDepartment(Department department);
 }

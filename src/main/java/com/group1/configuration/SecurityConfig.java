@@ -23,7 +23,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // Vô hiệu hóa CSRF nếu không dùng form-based authentication
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/users/**").permitAll() // Cho phép truy cập API user không cần auth
+            		  .requestMatchers("/users/**", "/departments/**").permitAll() // Cho phép truy cập API user không cần auth
                 .anyRequest().authenticated() // Các API khác yêu cầu xác thực
             )
             .sessionManagement(session -> session
